@@ -1,5 +1,5 @@
 [project]
-name = "aidiff"
+name = "diffaid"
 version = "0.1.0"
 description = "AI-assisted git diff review CLI"
 requires-python = ">=3.10"
@@ -12,4 +12,4 @@ dependencies = [
 ]
 
 [project.scripts]
-aidiff = "aidiff.cli:app"
+diffaid = "diffaid.cli:app"
