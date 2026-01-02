@@ -3,6 +3,7 @@ import json
 from google import genai
 from diffaid.ai.base import ReviewEngine
 from diffaid.models import ReviewResult
+from pydantic import ValidationError
 
 PROMPT = """
 You are an automated code review system.
@@ -48,11 +49,17 @@ class GeminiEngine(ReviewEngine):
         {diff}
         """
 
-        response = self.client.models.generate_content(
-            model=self.model,
-            contents=prompt,
-        )
-
-        data = json.loads(response.text)
-        # Enforce response schema (models.py)
-        return ReviewResult.model_validate(data)
+        try:
+          response = self.client.models.generate_content(
+              model=self.model,
+              contents=prompt,
+          )
+          data = json.loads(response.text)
+          # Enforce response schema (models.py)
+          return ReviewResult.model_validate(data)
+        except ValidationError as error:
+            raise RuntimeError(f"AI returned invalid schema: {error}") from error
+        
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"AI returned malformed JSON: {error}") from error
+        

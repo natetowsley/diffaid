@@ -14,13 +14,18 @@ def check():
         console.print("[green]No staged changes detected.[/green]")
         raise typer.Exit()
     
-    engine = GeminiEngine()
-    result = engine.review(diff)
+    try:
+        engine = GeminiEngine()
+        result = engine.review(diff)
+    except RuntimeError as error:
+        console.print(f"[red]Error:[/red] {error}")
+        raise typer.Exit(code=1)
 
-    console.print(f"\n[bold]Summary:[/bold] {result.summary}\n")
+    console.print(f"\n[bold]Summary:[/bold] {result.summary}\n\n---\n")
 
     for f in result.findings:
         color = {"error": "red", "warning": "yellow", "note": "cyan"}[f.severity]
         console.print(f"[{color}]{f.severity.upper()}[/]: {f.message}")
         if f.file:
-            console.print(f"  → {f.file} {f.lines or ''}")
+            console.print(f"[bold]  → {f.file} {f.lines or ''}[/bold]")
+        console.print()
