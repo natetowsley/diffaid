@@ -1,10 +1,9 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
 from diffaid.ai.base import ReviewEngine
 from diffaid.models import ReviewResult
 
-# Gemini Prompt
 PROMPT = """
 You are an automated code review system.
 
@@ -24,27 +23,36 @@ Return STRICT JSON matching this schema:
 }
 
 Rules:
-- Do not include markdown
-- Do not include explanations outside JSON
-- Be concise
-- Focus on correctness, risk, clarity, and documentation gaps
-
-Git diff:
-{diff}
+- Output JSON only
+- No markdown
+- No commentary
 """
 
 class GeminiEngine(ReviewEngine):
-    def __init__(self, model="gemini-1.5-flash"):
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        self.model = genai.GenerativeModel(model)
+    def __init__(self, model="gemini-2.5-flash"):
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise RuntimeError("GEMINI_API_KEY is not set")
+
+        self.client = genai.Client(
+            http_options={'api_version': 'v1'},
+            api_key=api_key
+        )
+        self.model = model
 
     def review(self, diff: str) -> ReviewResult:
-        # Generate response, inserting diff argument
-        response = self.model.generate_content(
-            PROMPT.format(diff=diff)
+        # Insert diff into prompt
+        prompt = f"""{PROMPT}
+
+        Git diff:
+        {diff}
+        """
+
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=prompt,
         )
 
-        # Convert text into python dictionary
         data = json.loads(response.text)
         # Enforce response schema (models.py)
         return ReviewResult.model_validate(data)
