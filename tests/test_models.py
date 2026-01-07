@@ -3,7 +3,7 @@ from pydantic import ValidationError
 from diffaid.models import Finding, ReviewResult
 
 def test_finding_valid():
-    """Test velid Finding creation"""
+    """Test valid Finding creation"""
     finding = Finding(
         severity="error",
         message="Test error",
