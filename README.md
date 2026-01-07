@@ -1,7 +1,7 @@
 # DiffAid
 [![PyPI version](https://img.shields.io/pypi/v/diffaid)](https://pypi.org/project/diffaid/)
 [![Python versions](https://img.shields.io/pypi/pyversions/diffaid)](https://pypi.org/project/diffaid/)
-[![License](https://img.shields.io/pypi/l/diffaid)](https://github.com/natetowsley/diffaid/blob/main/LICENSE)
+[![License](https://img.shields.io/pypi/l/diffaid)](https://github.com/natetowsley/diffaid/blob/master/LICENSE)
 
 AI-assisted git diff review CLI that catches bugs before you commit.
 
