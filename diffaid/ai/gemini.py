@@ -4,6 +4,9 @@ from google import genai
 from diffaid.ai.base import ReviewEngine
 from diffaid.models import ReviewResult
 from pydantic import ValidationError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 PROMPT = """
 You are an automated code review system.
@@ -45,10 +48,8 @@ class GeminiEngine(ReviewEngine):
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             raise RuntimeError("GEMINI_API_KEY is not set.\n"
-                "Get a free key at: https://aistudio.google.com/apikey\n"
-                "Then set it: \n" \
-                "\tMac/Linux: export GEMINI_API_KEY='your-key-here'\n" \
-                "\tWindows: $env:GEMINI_API_KEY='your-key-here'"
+                "Create a .env file in root with: GEMINI_API_KEY=your-key-here\n"
+                "Or get a free key at: https://aistudio.google.com/apikey"
             )
 
         self.client = genai.Client(
