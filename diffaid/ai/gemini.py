@@ -8,7 +8,47 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PROMPT = """
+PROMPT_DEFAULT = """
+You are an automated code review system.
+
+Analyze the following git diff and provide a HIGH-LEVEL review.
+
+Focus on:
+- Critical errors that would break functionality or cause bugs
+- Security vulnerabilities
+- Major architectural or design issues
+- Significant performance problems
+
+Provide one finding containing a brief summary of changes per file (1-2 sentences) and 
+only flag IMPORTANT issues. If IMPORTANT issues arise, there can be multiple findings per file,
+ one for each IMPORTANT issue. Do NOT provide minor style suggestions, nitpicks, or obvious observations.
+
+Return STRICT JSON matching this schema:
+
+{
+  "summary": string,
+  "findings": [
+    {
+      "severity": "error" | "warning" | "note",
+      "message": string,
+      "file": string | null
+    }
+  ]
+}
+
+Review rules:
+- Prioritize critical issues over minor improvements
+- Keep findings concise and actionable
+- Only include notes for genuinely important observations
+- Limit to the most impactful findings (aim for 5-10 total findings max)
+
+Output rules:
+- Output JSON only
+- No markdown
+- No commentary
+"""
+
+PROMPT_DETAILED = """
 You are an automated code review system.
 
 Analyze the following git diff.
@@ -24,8 +64,7 @@ Return STRICT JSON matching this schema:
     {
       "severity": "error" | "warning" | "note",
       "message": string,
-      "file": string | null,
-      "lines": string | null
+      "file": string | null
     }
   ]
 }
@@ -58,9 +97,12 @@ class GeminiEngine(ReviewEngine):
         )
         self.model = model
 
-    def review(self, diff: str) -> ReviewResult:
+    def review(self, diff: str, detailed: bool = False) -> ReviewResult:
+        # Choose prompt based on value of detailed
+        prompt_template = PROMPT_DETAILED if detailed else PROMPT_DEFAULT
+
         # Insert diff into prompt
-        prompt = f"""{PROMPT}
+        prompt = f"""{prompt_template}
 
         Git diff:
         {diff}
