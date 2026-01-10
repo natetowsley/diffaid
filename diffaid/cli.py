@@ -21,6 +21,12 @@ def check(
         False,
         "--strict",
         help="Treat warnings as errors (exit code 1)"
+    ),
+    detailed: bool = typer.Option(
+        False,
+        "--detailed",
+        "-d",
+        help="Perform detailed line-by-line review with all suggestions"
     )
 ):
     """
@@ -31,8 +37,11 @@ def check(
     
     Example Usage:
     
-      # Basic review
+      # Quick overview (default)
       $ diffaid
+
+      # Analysis of all changes (with suggestions)
+      $ diffaid --detailed
 
       # JSON output
       $ diffaid --json
@@ -63,7 +72,7 @@ def check(
     # Set engine and retrieve AI response
     try:
         engine = GeminiEngine()
-        result = engine.review(diff)
+        result = engine.review(diff, detailed=detailed)
     except RuntimeError as error:
         if json_output:
             print(json.dumps({"error": str(error)}))
@@ -105,7 +114,7 @@ def check(
             color = {"error": "red", "warning": "yellow", "note": "cyan"}[f.severity]
             console.print(f"[{color}]{f.severity.upper()}[/]: {f.message}")
             if f.file:
-                console.print(f"[bold]  → {f.file} {f.lines or ''}[/bold]")
+                console.print(f"[bold]  → {f.file}[/bold]")
             console.print()
 
     # Count findings

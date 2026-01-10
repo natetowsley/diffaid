@@ -9,7 +9,6 @@ class Finding(BaseModel):
     severity: Severity
     message: str
     file: str | None = None
-    lines: str | None = None
 
 class ReviewResult(BaseModel):
     summary: str
