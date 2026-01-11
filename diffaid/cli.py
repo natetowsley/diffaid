@@ -1,5 +1,6 @@
 import typer
 import json
+from diffaid import __version__
 from rich.console import Console
 from diffaid.git import get_staged_diff
 from diffaid.ai.gemini import GeminiEngine
@@ -9,6 +10,11 @@ app = typer.Typer(
     add_completion=False
 )
 console = Console()
+
+def version_callback(value: bool):
+    if value:
+        console.print(f"diffaid version {__version__}")
+        raise typer.Exit()
 
 @app.command()
 def check(
@@ -27,6 +33,14 @@ def check(
         "--detailed",
         "-d",
         help="Perform detailed line-by-line review with all suggestions"
+    ),
+    version: bool = typer.Option(
+        None,
+        "--version",
+        "-v",
+        callback=version_callback,
+        is_eager=True,
+        help="Show version and exit"
     )
 ):
     """
