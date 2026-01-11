@@ -7,8 +7,7 @@ def test_finding_valid():
     finding = Finding(
         severity="error",
         message="Test error",
-        file="test.py",
-        lines="10-15"
+        file="test.py"
     )
     assert finding.severity == "error"
     assert finding.message == "Test error"

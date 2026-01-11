@@ -19,8 +19,7 @@ def valid_ai_response():
             {
                 "severity": "error",
                 "message": "Hardcoded password detected",
-                "file": "test.py",
-                "lines": "1"
+                "file": "test.py"
             }
         ]
     }
