@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
 
+## [0.2.1] - 2026-01-10
+### Fixed
+- **Reliable `.env` discovery for CLI installs**: DiffAid now loads `.env` starting from the user’s current working directory (and searches upward), instead of failing when installed/running from `site-packages`.
+  - Resolves cases where `.env` existed in the project folder but `GEMINI_API_KEY` was still reported missing.
+
 ## [0.2.0] - 2026-01-10
 ### Added
 - **`--json` flag**: Output raw JSON for automation, CI/CD integration, and scripting
@@ -76,5 +81,6 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ### Notes
 - The CLI help text mentions “warnings in strict mode,” but strict mode behavior is not implemented in v0.1.0.
 
+[0.2.1]: https://github.com/natetowsley/diffaid/releases/tag/v0.2.1
 [0.2.0]: https://github.com/natetowsley/diffaid/releases/tag/v0.2.0
 [0.1.0]: https://github.com/natetowsley/diffaid/releases/tag/v0.1.0

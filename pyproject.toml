@@ -1,6 +1,6 @@
 [project]
 name = "diffaid"
-version = "0.2.0"
+version = "0.2.1"
 description = "AI-assisted git diff review CLI"
 requires-python = ">=3.10"
 authors = [
